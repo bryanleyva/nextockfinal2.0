@@ -26,8 +26,8 @@ import { AuthService } from '../../core/auth.service';
 export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
-  email = 'admin@nextock.com';
-  password = 'admin123';
+  email = '';
+  password = '';
   cargando = signal(false);
   error = signal('');
 
