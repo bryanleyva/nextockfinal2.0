@@ -1,0 +1,62 @@
+# ============================================================================
+#  NEXTOCK — Despliegue en UNA máquina (VM "siempre gratis" tipo Oracle Cloud).
+#  Levanta PostgreSQL (persistente) + la app (Angular + API + ML) juntos.
+#
+#  Uso:
+#     cp .env.example .env   # y edita las variables
+#     docker compose up -d --build
+#  La app queda en  http://<ip-de-tu-vm>:3000
+# ============================================================================
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-nextock}
+    volumes:
+      - pg_data:/var/lib/postgresql/data        # ← aquí se guarda TODO, de forma persistente
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-nextock}
+      DB_SSL: "false"
+      DB_SYNCHRONIZE: "true"
+      JWT_SECRET: ${JWT_SECRET:-cambia_este_secreto}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+      ML_SERVICE_URL: http://127.0.0.1:8000
+      ML_DATA_DIR: /app/MLNEXTOCK/data
+      FRONTEND_DIST: /app/frontend/browser
+      MAIL_FROM: ${MAIL_FROM:-}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASS: ${MAIL_PASS:-}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ml_data:/app/MLNEXTOCK/data            # CSV por bodega (se regeneran desde la BD)
+      - ml_models:/app/MLNEXTOCK/models        # modelos XGBoost entrenados
+      - uploads:/app/backend/uploads           # avatares subidos
+
+volumes:
+  pg_data:
+  ml_data:
+  ml_models:
+  uploads:

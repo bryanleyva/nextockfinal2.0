@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXTOCK — Gestión de Inventarios</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+</head>
+<body>
+
+  <!-- ============ PANTALLA DE AUTENTICACIÓN (HU-23 / HU-24) ============ -->
+  <section id="auth" class="auth-screen">
+    <div class="auth-card">
+      <h1 class="logo">NE<span>X</span>TOCK</h1>
+      <p class="subtitle">Gestión de inventarios con Machine Learning</p>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="login">Iniciar sesión</button>
+        <button class="tab" data-tab="registro">Registrarse</button>
+      </div>
+
+      <!-- Login -->
+      <form id="form-login" class="auth-form">
+        <input type="email" id="login-email" placeholder="Correo" value="admin@nextock.com" required />
+        <input type="password" id="login-pass" placeholder="Contraseña" value="admin123" required />
+        <button type="submit" class="btn-primary">Ingresar</button>
+      </form>
+
+      <!-- Registro -->
+      <form id="form-registro" class="auth-form hidden">
+        <input type="text" id="reg-nombre" placeholder="Nombre completo" required />
+        <input type="text" id="reg-bodega" placeholder="Nombre de la bodega" />
+        <input type="email" id="reg-email" placeholder="Correo" required />
+        <input type="password" id="reg-pass" placeholder="Contraseña (mín. 6)" required />
+        <button type="submit" class="btn-primary">Crear cuenta</button>
+      </form>
+
+      <p id="auth-msg" class="msg"></p>
+    </div>
+  </section>
+
+  <!-- ===================== APLICACIÓN ===================== -->
+  <div id="app" class="hidden">
+    <header class="topbar">
+      <h1 class="logo small">NE<span>X</span>TOCK</h1>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="prediccion">Predicción</button>
+        <button class="nav-btn" data-view="reportes">Reportes</button>
+        <button class="nav-btn" data-view="subir">Subir datos</button>
+      </nav>
+      <div class="user-box">
+        <span id="user-name"></span>
+        <button id="btn-logout" class="btn-ghost">Salir</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ---------- DASHBOARD (HU-05, HU-18) ---------- -->
+      <section id="view-dashboard" class="view">
+        <h2>Panel de control</h2>
+        <div id="metricas" class="cards"></div>
+        <div class="grid-2">
+          <div class="panel"><h3>Estado del inventario</h3><div id="chart-estados" class="chart"></div></div>
+          <div class="panel"><h3>Top productos más vendidos</h3><div id="chart-ranking" class="chart"></div></div>
+        </div>
+        <div class="panel"><h3>Ventas diarias</h3><div id="chart-ventas" class="chart"></div></div>
+      </section>
+
+      <!-- ---------- PREDICCIÓN (HU-01, HU-09, HU-11) ---------- -->
+      <section id="view-prediccion" class="view hidden">
+        <h2>Predicción por producto</h2>
+        <div class="search-row">
+          <select id="sel-producto"></select>
+          <button id="btn-predecir" class="btn-primary">Analizar</button>
+        </div>
+        <div id="pred-resultado" class="hidden">
+          <div class="grid-2">
+            <div class="panel ficha">
+              <h3>Reporte del producto</h3>
+              <pre id="ficha-texto"></pre>
+              <div id="estado-badge"></div>
+            </div>
+            <div class="panel"><h3>Proyección de stock</h3><div id="chart-stock" class="chart"></div></div>
+          </div>
+          <div class="panel"><h3>Pronóstico de demanda (XGBoost)</h3><div id="chart-demanda" class="chart"></div></div>
+        </div>
+      </section>
+
+      <!-- ---------- REPORTES (HU-09, HU-10, HU-11) ---------- -->
+      <section id="view-reportes" class="view hidden">
+        <h2>Reportes</h2>
+        <div class="panel">
+          <h3>Resumen financiero</h3>
+          <div id="finanzas" class="cards"></div>
+        </div>
+        <div class="panel">
+          <h3>Reporte de inventario — sobre stock / déficit</h3>
+          <div class="table-wrap">
+            <table id="tabla-reporte">
+              <thead><tr>
+                <th>SKU</th><th>Producto</th><th>Estado</th><th>Stock</th>
+                <th>Demanda diaria</th><th>Días a quiebre</th><th>Pedir</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- SUBIR DATOS (HU-17 / HU-03) ---------- -->
+      <section id="view-subir" class="view hidden">
+        <h2>Subir base de datos (CSV)</h2>
+        <div class="panel">
+          <p>Sube los archivos en formato CSV. Al subir los <b>hechos de ventas</b> el modelo se reentrena automáticamente.</p>
+          <div class="upload-row">
+            <label>1) Catálogo de productos (product.csv)</label>
+            <input type="file" id="file-productos" accept=".csv" />
+            <button id="btn-up-prod" class="btn-secondary">Subir productos</button>
+          </div>
+          <div class="upload-row">
+            <label>2) Ventas e inventario (fact_sales_inventory.csv)</label>
+            <input type="file" id="file-hechos" accept=".csv" />
+            <button id="btn-up-hechos" class="btn-secondary">Subir y reentrenar</button>
+          </div>
+          <p id="upload-msg" class="msg"></p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

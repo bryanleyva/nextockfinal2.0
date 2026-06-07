@@ -1,0 +1,36 @@
+# ===== Dependencias =====
+**/node_modules/
+**/.venv/
+**/__pycache__/
+*.py[cod]
+
+# ===== Builds / artefactos =====
+**/dist/
+**/.angular/
+**/tmp/
+**/out-tsc/
+
+# ===== Secretos / entorno =====  (NUNCA subir credenciales)
+**/.env
+**/.env.*
+!**/.env.example
+
+# ===== ML: salidas y modelos generados (se regeneran solos) =====
+MLNEXTOCK/outputs/
+MLNEXTOCK/models/
+MLNEXTOCK/data/stores/
+
+# ===== Subidas de usuarios =====
+nextockbackend2.0/uploads/
+
+# ===== Logs / temporales =====
+*.log
+npm-debug.log*
+**/.DS_Store
+Thumbs.db
+
+# ===== Editor / herramientas =====
+.vscode/
+.idea/
+**/.claude/
+*.swp

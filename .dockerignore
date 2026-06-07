@@ -1,0 +1,21 @@
+# Mantiene la imagen pequeña: nada de esto entra al contexto de build.
+**/node_modules
+**/dist
+**/.angular
+**/.git
+**/.venv
+**/__pycache__
+**/*.log
+**/.env
+**/.env.local
+
+# Artefactos del ML que se regeneran solos (desde la BD / al predecir)
+MLNEXTOCK/outputs
+MLNEXTOCK/models
+MLNEXTOCK/data
+
+# Subidas de usuarios (no van en la imagen)
+nextockbackend2.0/uploads
+
+# Frontend antiguo (no se despliega)
+nextockfrontend2.0/

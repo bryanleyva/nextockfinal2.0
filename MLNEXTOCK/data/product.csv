@@ -1,0 +1,16 @@
+product_id,store_id,source_product_id,product_name,category,unit_measure,sale_price,purchase_price,lead_time_days,active,created_at
+1,1,SKU-0001,Inca Kola 500ml,Bebidas,und,3.0,1.79,2,True,2025-12-08 08:00:00
+2,1,SKU-0002,Coca Cola 500ml,Bebidas,und,3.0,1.72,2,True,2025-12-08 08:00:00
+3,1,SKU-0003,Agua San Luis 625ml,Bebidas,und,1.5,0.96,2,True,2025-12-08 08:00:00
+4,1,SKU-0004,Galleta Soda Field,Snacks,und,1.2,0.85,2,True,2025-12-08 08:00:00
+5,1,SKU-0005,Chocolate Sublime,Snacks,und,2.0,1.41,2,True,2025-12-08 08:00:00
+6,1,SKU-0006,Papas Lays 90g,Snacks,und,3.5,2.27,3,True,2025-12-08 08:00:00
+7,1,SKU-0007,Arroz Costeno 1kg,Abarrotes,kg,4.5,2.52,1,True,2025-12-08 08:00:00
+8,1,SKU-0008,Azucar Rubia 1kg,Abarrotes,kg,4.2,2.47,2,True,2025-12-08 08:00:00
+9,1,SKU-0009,Fideos Don Vittorio,Abarrotes,und,3.2,2.18,2,True,2025-12-08 08:00:00
+10,1,SKU-0010,Aceite Primor 1L,Abarrotes,L,9.9,7.3,3,True,2025-12-08 08:00:00
+11,1,SKU-0011,Leche Gloria tarro,Lacteos,und,4.3,2.92,1,True,2025-12-08 08:00:00
+12,1,SKU-0012,Yogurt Gloria 1L,Lacteos,L,7.8,4.61,3,True,2025-12-08 08:00:00
+13,1,SKU-0013,Detergente Bolivar,Limpieza,und,8.5,6.26,3,True,2025-12-08 08:00:00
+14,1,SKU-0014,Lejia Clorox 1L,Limpieza,L,4.8,2.73,3,True,2025-12-08 08:00:00
+15,1,SKU-0015,Shampoo Head&Shoulders,Cuidado Personal,und,14.9,9.11,3,True,2025-12-08 08:00:00
