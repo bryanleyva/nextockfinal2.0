@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
+import { roleGuard } from './core/role.guard';
+import { AdminComponent } from './pages/admin/admin.component';
 import { PublicLayoutComponent } from './layout/public-layout.component';
 import { PrivateLayoutComponent } from './layout/private-layout.component';
 import { LandingComponent } from './pages/landing/landing.component';
@@ -34,11 +36,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'inicio', component: InicioComponent },
-      { path: 'procesar', component: ProcesarComponent },
-      { path: 'inventario', component: InventarioComponent },
+      // Escritura de datos: solo bodeguero/admin (el visualizador no entra)
+      { path: 'procesar', component: ProcesarComponent, canActivate: [roleGuard], data: { roles: ['gestor', 'administrador'] } },
+      { path: 'inventario', component: InventarioComponent, canActivate: [roleGuard], data: { roles: ['gestor', 'administrador'] } },
       { path: 'analisis', component: AnalisisComponent },
       { path: 'historial', component: HistorialComponent },
       { path: 'prediccion', component: PrediccionComponent },
+      // Panel de administración: solo administrador
+      { path: 'admin', component: AdminComponent, canActivate: [roleGuard], data: { roles: ['administrador'] } },
       { path: 'soporte', component: SoporteComponent },
       { path: 'perfil', component: PerfilComponent },
       { path: '', redirectTo: 'inicio', pathMatch: 'full' },

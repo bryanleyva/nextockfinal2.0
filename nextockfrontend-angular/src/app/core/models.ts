@@ -9,9 +9,11 @@ export interface Perfil {
   registrado: string;
 }
 
+export type Rol = 'administrador' | 'gestor' | 'visualizador';
+
 export interface SesionResp {
   access_token: string;
-  usuario: { id: number; email: string; nombre: string };
+  usuario: { id: number; email: string; nombre: string; rol?: Rol };
 }
 
 export interface Producto {

@@ -41,6 +41,14 @@ export class AuthService {
   get token() { return localStorage.getItem('nx_token'); }
   get logueado() { return !!this.token; }
 
+  /** Rol del usuario actual (por defecto 'gestor' si no viene). */
+  get rol(): string { return this.usuario()?.rol || 'gestor'; }
+  get esAdmin() { return this.rol === 'administrador'; }
+  get esGestor() { return this.rol === 'gestor'; }
+  get esVisualizador() { return this.rol === 'visualizador'; }
+  /** Puede escribir datos (subir CSV, registrar movimientos). */
+  get puedeEditar() { return this.esGestor || this.esAdmin; }
+
   salir() {
     localStorage.removeItem('nx_token');
     localStorage.removeItem('nx_user');

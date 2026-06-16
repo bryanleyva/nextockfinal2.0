@@ -10,8 +10,10 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { GetUser } from '../auth/get-user.decorator';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 import { DatasetService, MovimientoDto } from './dataset.service';
 import { MlService } from '../ml/ml.service';
 
@@ -20,23 +22,25 @@ import { MlService } from '../ml/ml.service';
  * HU-03: actualizar la base de datos (al recargar hechos se reentrena el modelo).
  */
 @Controller('datos')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class DatasetController {
   constructor(
     private readonly dataset: DatasetService,
     private readonly ml: MlService,
   ) {}
 
-  // Subir catalogo de productos (product.csv)
+  // Subir catalogo de productos (product.csv) — solo bodeguero/admin
   @Post('productos')
+  @Roles(UserRole.GESTOR, UserRole.ADMIN)
   @UseInterceptors(FileInterceptor('file'))
   async subirProductos(@GetUser() user: User, @UploadedFile() file: Express.Multer.File) {
     this.validar(file);
     return this.dataset.cargarProductos(user.id, file.buffer, file.originalname);
   }
 
-  // Subir hechos de ventas/inventario (fact_sales_inventory.csv) y reentrenar
+  // Subir hechos de ventas/inventario (fact_sales_inventory.csv) y reentrenar — solo bodeguero/admin
   @Post('hechos')
+  @Roles(UserRole.GESTOR, UserRole.ADMIN)
   @UseInterceptors(FileInterceptor('file'))
   async subirHechos(@GetUser() user: User, @UploadedFile() file: Express.Multer.File) {
     this.validar(file);
@@ -54,6 +58,7 @@ export class DatasetController {
   // Registrar un movimiento manual (venta / ingreso / ajuste) de un producto.
   // Mantiene el inventario al dia sin necesidad de re-subir un CSV.
   @Post('movimiento')
+  @Roles(UserRole.GESTOR, UserRole.ADMIN)
   async movimiento(@GetUser() user: User, @Body() dto: MovimientoDto) {
     if (dto?.productId == null || dto?.tipo == null || dto?.cantidad == null) {
       throw new BadRequestException('Faltan datos del movimiento (productId, tipo, cantidad)');

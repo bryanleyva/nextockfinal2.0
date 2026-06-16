@@ -20,6 +20,12 @@ export class ApiService {
     return this.http.post<Perfil>(`${API_BASE}/usuarios/avatar`, fd);
   }
 
+  // ---- Administración (solo rol administrador) ----
+  adminBodegas() { return this.http.get<any[]>(`${API_BASE}/usuarios/admin/bodegas`); }
+  cambiarRol(id: number, rol: string) {
+    return this.http.patch<any>(`${API_BASE}/usuarios/admin/usuarios/${id}/rol`, { rol });
+  }
+
   // ---- Inventario / dashboard ----
   metricas() { return this.http.get<Metricas>(`${API_BASE}/inventario/metricas`); }
   ventas(desde?: string, hasta?: string) {

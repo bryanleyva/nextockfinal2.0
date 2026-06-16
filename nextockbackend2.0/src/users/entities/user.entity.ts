@@ -1,8 +1,9 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserRole {
-  ADMIN = 'administrador',
-  GESTOR = 'gestor',
+  ADMIN = 'administrador',        // nosotros: ve todas las bodegas, usuarios e info
+  GESTOR = 'gestor',              // bodeguero: ingresa y manipula los datos de SU bodega
+  VISUALIZADOR = 'visualizador',  // solo consulta reportes (lectura)
 }
 
 /**

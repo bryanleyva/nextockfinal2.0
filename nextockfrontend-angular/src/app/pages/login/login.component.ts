@@ -32,8 +32,15 @@ export class LoginComponent {
   error = signal('');
 
   entrar() {
-    this.cargando.set(true); this.error.set('');
-    this.auth.login(this.email, this.password).subscribe({
+    this.error.set('');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email.trim())) {
+      return this.error.set('Ingresa un correo electrónico válido.');
+    }
+    if (!this.password) {
+      return this.error.set('Ingresa tu contraseña.');
+    }
+    this.cargando.set(true);
+    this.auth.login(this.email.trim(), this.password).subscribe({
       next: () => this.router.navigate(['/app/inicio']),
       error: (e) => { this.error.set(e.error?.message || 'Usuario o contraseña incorrectos'); this.cargando.set(false); },
     });

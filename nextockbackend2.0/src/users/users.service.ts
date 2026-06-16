@@ -47,4 +47,30 @@ export class UsersService {
     await this.repo.update({ id }, permitido);
     return this.findById(id);
   }
+
+  /**
+   * ADMIN: lista todas las bodegas registradas (cada usuario es una bodega) con
+   * un resumen de su información (rol, productos cargados, días de datos, etc.).
+   */
+  async listarBodegas(): Promise<any[]> {
+    return this.repo.manager.query(`
+      SELECT u.id,
+             u.full_name        AS nombre,
+             u.email,
+             u.bodega,
+             u.role             AS rol,
+             u.created_at        AS registrado,
+             (SELECT COUNT(*) FROM product p WHERE p.store_id = u.id)                              AS productos,
+             (SELECT COUNT(DISTINCT f.record_date) FROM fact_sales_inventory f WHERE f.store_id = u.id) AS dias_datos,
+             (SELECT MAX(f.record_date) FROM fact_sales_inventory f WHERE f.store_id = u.id)       AS ultima_fecha
+      FROM users u
+      ORDER BY u.created_at DESC
+    `);
+  }
+
+  /** ADMIN: cambia el rol de un usuario. */
+  async cambiarRol(id: number, rol: User['role']): Promise<User> {
+    await this.repo.update({ id }, { role: rol });
+    return this.findById(id);
+  }
 }

@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   UploadedFile,
@@ -15,8 +16,10 @@ import { IsOptional, IsString } from 'class-validator';
 import * as fs from 'fs';
 import * as path from 'path';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { GetUser } from '../auth/get-user.decorator';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 class UpdatePerfilDto {
@@ -31,13 +34,30 @@ export const AVATAR_DIR = path.join(process.cwd(), 'uploads', 'avatars');
  * HU-15: ver y editar mi perfil, incluyendo la foto (avatar).
  */
 @Controller('usuarios')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly users: UsersService) {}
 
   @Get('perfil')
   perfil(@GetUser() user: User) {
     return this.map(user);
+  }
+
+  // ---- ADMIN: gestión de bodegas y usuarios ----
+  @Get('admin/bodegas')
+  @Roles(UserRole.ADMIN)
+  listarBodegas() {
+    return this.users.listarBodegas();
+  }
+
+  @Patch('admin/usuarios/:id/rol')
+  @Roles(UserRole.ADMIN)
+  async cambiarRol(@Param('id') id: string, @Body() body: { rol: UserRole }) {
+    if (!Object.values(UserRole).includes(body?.rol)) {
+      throw new BadRequestException('Rol no válido');
+    }
+    const u = await this.users.cambiarRol(Number(id), body.rol);
+    return this.map(u);
   }
 
   @Patch('perfil')

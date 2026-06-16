@@ -29,7 +29,7 @@ export class AuthService {
       password: hash,
       bodega: dto.bodega,
     });
-    return this.firmarToken(user.id, user.email, user.fullName);
+    return this.firmarToken(user.id, user.email, user.fullName, user.role);
   }
 
   /** HU-23: Iniciar sesion. */
@@ -39,7 +39,7 @@ export class AuthService {
       // HU-23 Escenario 2: credenciales invalidas
       throw new UnauthorizedException('Usuario o contrasena incorrectos');
     }
-    return this.firmarToken(user.id, user.email, user.fullName);
+    return this.firmarToken(user.id, user.email, user.fullName, user.role);
   }
 
   /** HU-25: Cambio de contrasena. */
@@ -55,11 +55,11 @@ export class AuthService {
     return { mensaje: 'Contrasena actualizada correctamente' };
   }
 
-  private firmarToken(id: number, email: string, nombre: string) {
+  private firmarToken(id: number, email: string, nombre: string, rol: string) {
     const token = this.jwt.sign({ sub: id, email });
     return {
       access_token: token,
-      usuario: { id, email, nombre },
+      usuario: { id, email, nombre, rol },
     };
   }
 }
