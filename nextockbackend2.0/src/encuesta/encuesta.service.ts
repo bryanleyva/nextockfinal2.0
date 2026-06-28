@@ -27,11 +27,12 @@ export class EncuestaService {
     if (ya) return { mostrar: false, motivo: 'ya_respondida' };
     if (user.role === UserRole.ADMIN) return { mostrar: false, motivo: 'admin' };
 
-    const dias = Math.floor((Date.now() - new Date(user.createdAt).getTime()) / 86400000);
+    const transcurridos = Math.floor((Date.now() - new Date(user.createdAt).getTime()) / 86400000);
+    const diaActual = transcurridos + 1; // el día de registro cuenta como día 1
     return {
-      mostrar: dias >= this.diasParaMostrar,
-      dias_desde_registro: dias,
-      dias_requeridos: this.diasParaMostrar,
+      mostrar: diaActual >= this.diasParaMostrar, // aparece EN el 5° día
+      dia_actual: diaActual,
+      dia_objetivo: this.diasParaMostrar,
     };
   }
 
