@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/api.service';
+import { EncuestaComponent } from '../../shared/encuesta.component';
 
 interface BodegaAdmin {
   id: number; nombre: string; email: string; bodega: string | null;
@@ -12,7 +13,7 @@ interface BodegaAdmin {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EncuestaComponent],
   styles: [`
     .rolsel { padding:6px 10px; border:1px solid var(--borde-fuerte); border-radius:18px; background:#fff; font-family:inherit; font-size:.85rem; color:var(--text); }
     .badge { padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:700; color:#fff; }
@@ -60,9 +61,16 @@ interface BodegaAdmin {
       <p *ngIf="!bodegas().length" class="center small" style="margin-top:10px;">No hay bodegas registradas todavía.</p>
     </div>
 
+    <!-- Vista previa del formulario de encuesta (no guarda) -->
+    <app-encuesta #enc [autoCheck]="false" [preview]="true" />
+
     <!-- Encuesta de Experiencia de Usuario -->
     <div class="panel" *ngIf="encuesta() as e">
-      <h3>📋 Encuesta de Experiencia de Usuario <span class="small">({{ e.total }} respuesta{{ e.total === 1 ? '' : 's' }})</span></h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <h3 style="margin-bottom:0;">📋 Encuesta de Experiencia de Usuario <span class="small">({{ e.total }} respuesta{{ e.total === 1 ? '' : 's' }})</span></h3>
+        <button class="btn-ghost" (click)="enc.abrir()">👁️ Ver formulario</button>
+      </div>
+      <p class="small" style="margin:6px 0 14px;">Así se ve el formulario que reciben los usuarios al 5° día.</p>
       <div *ngIf="e.total" class="metrics" style="margin-bottom:18px;">
         <div class="metric" *ngFor="let c of cols"><div class="v">{{ e.promedios[c.k] }}<span class="small">/5</span></div><div class="l">{{ c.t }}</div></div>
       </div>

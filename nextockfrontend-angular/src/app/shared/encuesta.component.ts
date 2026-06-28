@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../core/api.service';
@@ -43,6 +43,7 @@ import { ApiService } from '../core/api.service';
         <div class="head">
           <h3>Evaluación de Experiencia de Usuario — Modelo Predictivo</h3>
           <p>Califica tu experiencia del 1 (Muy en desacuerdo / Difícil) al 5 (Muy de acuerdo / Fácil).</p>
+          <p *ngIf="preview" style="margin-top:6px;font-weight:700;">👁️ Vista previa — las respuestas no se guardan.</p>
         </div>
         <div class="body">
           <div class="q" *ngFor="let q of preguntas; let i = index">
@@ -66,8 +67,12 @@ import { ApiService } from '../core/api.service';
     </div>
   `,
 })
-export class EncuestaComponent {
+export class EncuestaComponent implements OnInit {
   private api = inject(ApiService);
+  /** Si es false, no chequea solo si toca mostrarla (se abre manualmente con abrir()). */
+  @Input() autoCheck = true;
+  /** Vista previa: muestra el formulario pero no guarda (para el admin). */
+  @Input() preview = false;
   mostrar = signal(false);
   enviando = signal(false);
   ok = signal(true);
@@ -83,11 +88,20 @@ export class EncuestaComponent {
     { texto: '¿Estás satisfecho con la experiencia del modelo de predicción?', izq: 'Muy insatisfecho', der: 'Muy satisfecho' },
   ];
 
-  constructor() {
-    this.api.encuestaPendiente().subscribe({
-      next: (e) => { if (e?.mostrar) this.mostrar.set(true); },
-      error: () => {},
-    });
+  ngOnInit() {
+    if (this.autoCheck) {
+      this.api.encuestaPendiente().subscribe({
+        next: (e) => { if (e?.mostrar) this.mostrar.set(true); },
+        error: () => {},
+      });
+    }
+  }
+
+  /** Abre el formulario manualmente (usado por el admin para previsualizar). */
+  abrir() {
+    this.r = [null, null, null, null, null];
+    this.msg.set(''); this.ok.set(true);
+    this.mostrar.set(true);
   }
 
   luego() { this.mostrar.set(false); }
@@ -95,6 +109,10 @@ export class EncuestaComponent {
   enviar() {
     if (this.r.some((v) => v == null)) {
       this.ok.set(false); this.msg.set('Por favor responde todas las preguntas.'); return;
+    }
+    if (this.preview) {
+      this.ok.set(true); this.msg.set('Vista previa: las respuestas no se guardan.');
+      setTimeout(() => this.mostrar.set(false), 1400); return;
     }
     this.enviando.set(true); this.msg.set('');
     this.api.enviarEncuesta({
