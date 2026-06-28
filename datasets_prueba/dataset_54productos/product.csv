@@ -1,0 +1,55 @@
+product_id,store_id,source_product_id,product_name,category,unit_measure,sale_price,purchase_price,lead_time_days,active,created_at
+1,1,SKU-0001,Arroz Costeno 1kg,Abarrotes,kg,4.5,2.68,3,True,2025-08-31 08:00:00
+2,1,SKU-0002,Inca Kola 500ml,Bebidas,und,3.0,2.16,3,True,2025-08-31 08:00:00
+3,1,SKU-0003,Leche Gloria tarro,Lacteos,und,4.3,2.62,3,True,2025-08-31 08:00:00
+4,1,SKU-0004,Detergente Bolivar 1kg,Limpieza,und,8.5,5.76,1,True,2025-08-31 08:00:00
+5,1,SKU-0005,Galleta Soda Field,Snacks,und,1.2,0.75,2,True,2025-08-31 08:00:00
+6,1,SKU-0006,Shampoo Head&Shoulders,Cuidado Personal,und,14.9,10.03,3,True,2025-08-31 08:00:00
+7,1,SKU-0007,Azucar Rubia 1kg,Abarrotes,kg,4.2,2.76,3,True,2025-08-31 08:00:00
+8,1,SKU-0008,Coca Cola 500ml,Bebidas,und,3.0,1.79,3,True,2025-08-31 08:00:00
+9,1,SKU-0009,Yogurt Gloria 1L,Lacteos,L,7.8,5.47,1,True,2025-08-31 08:00:00
+10,1,SKU-0010,Lejia Clorox 1L,Limpieza,L,4.8,3.25,2,True,2025-08-31 08:00:00
+11,1,SKU-0011,Chocolate Sublime,Snacks,und,2.0,1.19,3,True,2025-08-31 08:00:00
+12,1,SKU-0012,Jabon Dove,Cuidado Personal,und,3.5,2.58,1,True,2025-08-31 08:00:00
+13,1,SKU-0013,Fideos Don Vittorio,Abarrotes,und,3.2,2.27,1,True,2025-08-31 08:00:00
+14,1,SKU-0014,Agua San Luis 625ml,Bebidas,und,1.5,1.09,3,True,2025-08-31 08:00:00
+15,1,SKU-0015,Queso Fresco 250g,Lacteos,und,8.5,6.18,1,True,2025-08-31 08:00:00
+16,1,SKU-0016,Jabon Bolivar,Limpieza,und,2.5,1.85,2,True,2025-08-31 08:00:00
+17,1,SKU-0017,Papas Lays 90g,Snacks,und,3.5,2.46,3,True,2025-08-31 08:00:00
+18,1,SKU-0018,Pasta Dental Colgate,Cuidado Personal,und,5.0,2.89,1,True,2025-08-31 08:00:00
+19,1,SKU-0019,Aceite Primor 1L,Abarrotes,L,9.9,6.7,2,True,2025-08-31 08:00:00
+20,1,SKU-0020,Pepsi 500ml,Bebidas,und,2.8,1.91,1,True,2025-08-31 08:00:00
+21,1,SKU-0021,Mantequilla Gloria,Lacteos,und,5.5,3.27,3,True,2025-08-31 08:00:00
+22,1,SKU-0022,Lavavajilla Sapolio,Limpieza,und,5.0,2.96,1,True,2025-08-31 08:00:00
+23,1,SKU-0023,Doritos 78g,Snacks,und,3.0,1.9,1,True,2025-08-31 08:00:00
+24,1,SKU-0024,Cepillo Dental Oral-B,Cuidado Personal,und,4.5,2.81,2,True,2025-08-31 08:00:00
+25,1,SKU-0025,Atun Florida,Abarrotes,und,5.5,3.4,3,True,2025-08-31 08:00:00
+26,1,SKU-0026,Sprite 500ml,Bebidas,und,3.0,1.73,2,True,2025-08-31 08:00:00
+27,1,SKU-0027,Leche Laive 1L,Lacteos,L,5.0,3.3,3,True,2025-08-31 08:00:00
+28,1,SKU-0028,Papel Higienico Elite x4,Limpieza,und,6.5,4.57,2,True,2025-08-31 08:00:00
+29,1,SKU-0029,Cheese Tris,Snacks,und,2.5,1.43,2,True,2025-08-31 08:00:00
+30,1,SKU-0030,Desodorante Rexona,Cuidado Personal,und,9.0,5.92,2,True,2025-08-31 08:00:00
+31,1,SKU-0031,Leche Condensada Nestle,Abarrotes,und,4.8,2.88,1,True,2025-08-31 08:00:00
+32,1,SKU-0032,Fanta 500ml,Bebidas,und,3.0,1.76,2,True,2025-08-31 08:00:00
+33,1,SKU-0033,Yogurt Laive 1L,Lacteos,L,7.5,4.81,1,True,2025-08-31 08:00:00
+34,1,SKU-0034,Limpiatodo Sapolio,Limpieza,und,4.2,3.09,1,True,2025-08-31 08:00:00
+35,1,SKU-0035,Chizitos,Snacks,und,1.5,1.08,3,True,2025-08-31 08:00:00
+36,1,SKU-0036,Papel Higienico Suave x4,Cuidado Personal,und,5.5,3.6,1,True,2025-08-31 08:00:00
+37,1,SKU-0037,Sal Marina 1kg,Abarrotes,kg,1.8,1.0,2,True,2025-08-31 08:00:00
+38,1,SKU-0038,Guarana 500ml,Bebidas,und,2.5,1.77,3,True,2025-08-31 08:00:00
+39,1,SKU-0039,Queso Edam 250g,Lacteos,und,11.0,6.52,1,True,2025-08-31 08:00:00
+40,1,SKU-0040,Esponja Scotch Brite,Limpieza,und,2.0,1.49,2,True,2025-08-31 08:00:00
+41,1,SKU-0041,Galleta Casino,Snacks,und,1.2,0.84,3,True,2025-08-31 08:00:00
+42,1,SKU-0042,Toalla Higienica Nosotras,Cuidado Personal,und,6.0,4.03,1,True,2025-08-31 08:00:00
+43,1,SKU-0043,Harina Blanca Flor 1kg,Abarrotes,kg,4.0,2.75,3,True,2025-08-31 08:00:00
+44,1,SKU-0044,Frugos Del Valle,Bebidas,und,2.0,1.33,2,True,2025-08-31 08:00:00
+45,1,SKU-0045,Margarina Sello de Oro,Lacteos,und,4.0,2.67,3,True,2025-08-31 08:00:00
+46,1,SKU-0046,Bolsas de Basura x10,Limpieza,und,3.5,2.02,3,True,2025-08-31 08:00:00
+47,1,SKU-0047,Galleta Oreo,Snacks,und,1.8,1.02,1,True,2025-08-31 08:00:00
+48,1,SKU-0048,Shampoo Sedal,Cuidado Personal,und,12.0,7.84,3,True,2025-08-31 08:00:00
+49,1,SKU-0049,Lenteja 500g,Abarrotes,und,3.5,2.2,2,True,2025-08-31 08:00:00
+50,1,SKU-0050,Cifrut 500ml,Bebidas,und,1.8,1.16,3,True,2025-08-31 08:00:00
+51,1,SKU-0051,Picaras,Snacks,und,1.5,0.96,1,True,2025-08-31 08:00:00
+52,1,SKU-0052,Frijol Canario 500g,Abarrotes,und,4.0,2.38,3,True,2025-08-31 08:00:00
+53,1,SKU-0053,Powerade 500ml,Bebidas,und,3.5,1.97,2,True,2025-08-31 08:00:00
+54,1,SKU-0054,Chocolate Triangulo,Snacks,und,3.5,2.45,3,True,2025-08-31 08:00:00

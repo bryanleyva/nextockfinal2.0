@@ -13,6 +13,7 @@ import { AnalysisModule } from './analysis/analysis.module';
 import { DatasetModule } from './dataset/dataset.module';
 import { SupportModule } from './support/support.module';
 import { HistorialModule } from './historial/historial.module';
+import { EncuestaModule } from './encuesta/encuesta.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { HistorialModule } from './historial/historial.module';
     DatasetModule,
     SupportModule,
     HistorialModule,
+    EncuestaModule,
   ],
 })
 export class AppModule {}

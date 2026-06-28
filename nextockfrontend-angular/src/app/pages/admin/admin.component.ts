@@ -59,12 +59,42 @@ interface BodegaAdmin {
       </div>
       <p *ngIf="!bodegas().length" class="center small" style="margin-top:10px;">No hay bodegas registradas todavía.</p>
     </div>
+
+    <!-- Encuesta de Experiencia de Usuario -->
+    <div class="panel" *ngIf="encuesta() as e">
+      <h3>📋 Encuesta de Experiencia de Usuario <span class="small">({{ e.total }} respuesta{{ e.total === 1 ? '' : 's' }})</span></h3>
+      <div *ngIf="e.total" class="metrics" style="margin-bottom:18px;">
+        <div class="metric" *ngFor="let c of cols"><div class="v">{{ e.promedios[c.k] }}<span class="small">/5</span></div><div class="l">{{ c.t }}</div></div>
+      </div>
+      <div *ngIf="e.total" style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Usuario</th><th>Bodega</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>Fecha</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let r of e.respuestas">
+              <td>{{ r.usuario }}<br><span class="small">{{ r.email }}</span></td>
+              <td>{{ r.bodega || '—' }}</td>
+              <td>{{ r.p1 }}</td><td>{{ r.p2 }}</td><td>{{ r.p3 }}</td><td>{{ r.p4 }}</td><td>{{ r.p5 }}</td>
+              <td class="small">{{ fmt(r.fecha) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p *ngIf="!e.total" class="center small" style="margin-top:6px;">Aún no hay respuestas. Aparecen al 5° día desde el registro de cada usuario.</p>
+    </div>
   `,
 })
 export class AdminComponent {
   private api = inject(ApiService);
   bodegas = signal<BodegaAdmin[]>([]);
+  encuesta = signal<any>(null);
   msg = signal(''); ok = signal(true);
+  cols = [
+    { k: 'p1', t: 'Facilidad de uso' },
+    { k: 'p2', t: 'Gráficos claros' },
+    { k: 'p3', t: 'Rapidez (XGBoost)' },
+    { k: 'p4', t: 'Utilidad recom.' },
+    { k: 'p5', t: 'Satisfacción' },
+  ];
 
   constructor() { this.cargar(); }
 
@@ -72,6 +102,10 @@ export class AdminComponent {
     this.api.adminBodegas().subscribe({
       next: (b) => this.bodegas.set(b || []),
       error: (e) => { this.ok.set(false); this.msg.set(e.error?.message || 'No se pudieron cargar las bodegas'); },
+    });
+    this.api.encuestaRespuestas().subscribe({
+      next: (e) => this.encuesta.set(e),
+      error: () => {},
     });
   }
 

@@ -2,12 +2,13 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NotificationsComponent } from './notifications.component';
+import { EncuestaComponent } from '../shared/encuesta.component';
 import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-private-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, NotificationsComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, NotificationsComponent, EncuestaComponent],
   template: `
     <div class="app">
       <header class="app-header">
@@ -27,6 +28,7 @@ import { AuthService } from '../core/auth.service';
         </nav>
       </header>
       <main class="app-main"><div class="container"><router-outlet /></div></main>
+      <app-encuesta />
     </div>
   `,
 })

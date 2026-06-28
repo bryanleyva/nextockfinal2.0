@@ -20,6 +20,19 @@ export class ApiService {
     return this.http.post<Perfil>(`${API_BASE}/usuarios/avatar`, fd);
   }
 
+  // ---- Encuesta de Experiencia de Usuario (validación) ----
+  encuestaPendiente() {
+    return this.http.get<{ mostrar: boolean; motivo?: string; dias_desde_registro?: number; dias_requeridos?: number }>(
+      `${API_BASE}/encuesta/pendiente`,
+    );
+  }
+  enviarEncuesta(dto: { p1: number; p2: number; p3: number; p4: number; p5: number }) {
+    return this.http.post<{ ok: boolean; mensaje?: string }>(`${API_BASE}/encuesta`, dto);
+  }
+  encuestaRespuestas() {
+    return this.http.get<{ total: number; promedios: any; respuestas: any[] }>(`${API_BASE}/encuesta/admin/respuestas`);
+  }
+
   // ---- Administración (solo rol administrador) ----
   adminBodegas() { return this.http.get<any[]>(`${API_BASE}/usuarios/admin/bodegas`); }
   cambiarRol(id: number, rol: string) {
