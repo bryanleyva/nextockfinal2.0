@@ -12,6 +12,7 @@ o:
 """
 from __future__ import annotations
 
+import gc
 import json
 import math
 import numpy as np
@@ -83,10 +84,12 @@ def series(sku: str, store: str | None = None):
 def reporte(store: str | None = None):
     """HU-09 / HU-11: reporte de prediccion de inventario (todos los productos)."""
     try:
-        res = reports.generar(store)
+        # Sin PNGs: la web dibuja graficos interactivos, y asi el reporte cabe
+        # en la memoria del hosting gratuito.
+        res = reports.generar(store, con_graficos=False)
     except FileNotFoundError as e:
         raise HTTPException(status_code=409, detail=str(e))
-    return _py({
+    salida = _py({
         "productos": res["tabla"].to_dict(orient="records"),
         "n_optimo": res["n_optimo"],
         "n_sobre_stock": res["n_sobre_stock"],
@@ -95,6 +98,8 @@ def reporte(store: str | None = None):
         "reporte_txt": res["reporte_txt"],
         "graficos": res["graficos"],
     })
+    gc.collect()  # libera memoria tras el reporte
+    return salida
 
 
 @app.get("/ml/finanzas")

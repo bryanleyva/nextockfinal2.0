@@ -23,8 +23,8 @@ PALETA = {
 def aplicar_estilo():
     plt.rcParams.update({
         "figure.figsize": (13, 6.5),
-        "figure.dpi": 120,
-        "savefig.dpi": 130,
+        "figure.dpi": 90,
+        "savefig.dpi": 90,
         "savefig.bbox": "tight",
         "font.size": 12,
         "axes.titlesize": 16,

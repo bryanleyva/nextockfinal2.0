@@ -106,7 +106,7 @@ def graficar_ranking_vendidos(n: int = 10, store=None) -> str:
     return str(viz.guardar(fig, config.rutas(store)["graficos"] / "ranking_vendidos.png"))
 
 
-def generar(store=None) -> dict:
+def generar(store=None, con_graficos: bool = True) -> dict:
     diags = analizar_todos(store)
     tabla = tabla_desde_diags(diags)
 
@@ -114,11 +114,15 @@ def generar(store=None) -> dict:
     tabla.to_csv(ruta_csv, index=False, encoding="utf-8")
     ruta_txt = escribir_reporte_texto(diags, store)
 
-    graficos = [
-        graficar_estados(tabla, store),
-        graficar_sobre_deficit(tabla, store),
-        graficar_ranking_vendidos(store=store),
-    ]
+    # Los PNG solo se generan cuando se piden (la web usa graficos interactivos).
+    # Omitirlos ahorra bastante memoria (util en hosting con RAM limitada).
+    graficos = []
+    if con_graficos:
+        graficos = [
+            graficar_estados(tabla, store),
+            graficar_sobre_deficit(tabla, store),
+            graficar_ranking_vendidos(store=store),
+        ]
     return {
         "tabla": tabla,
         "reporte_csv": str(ruta_csv),
