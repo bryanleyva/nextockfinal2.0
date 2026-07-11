@@ -22,12 +22,22 @@ from . import predict
 
 
 def analizar_todos(store=None) -> list[dict]:
-    """Diagnostica todos los productos (una sola pasada)."""
+    """Diagnostica todos los productos (una sola pasada).
+
+    Es TOLERANTE a datos inconsistentes: un producto sin historial de ventas o
+    con datos que rompan el pronostico se OMITE, en vez de tumbar todo el reporte.
+    """
     df_prod, df_fact, modelo = predict.cargar(store)
+    ids_con_historial = set(df_fact["product_id"].unique())
     diags = []
     for _, producto in df_prod.iterrows():
-        pron = predict.pronosticar(df_fact, producto, modelo)
-        diags.append(predict.diagnosticar(producto, pron))
+        if producto["product_id"] not in ids_con_historial:
+            continue  # sin historial de ventas: no se puede pronosticar
+        try:
+            pron = predict.pronosticar(df_fact, producto, modelo)
+            diags.append(predict.diagnosticar(producto, pron))
+        except Exception:
+            continue  # dato inconsistente en este producto: se omite
     return diags
 
 
