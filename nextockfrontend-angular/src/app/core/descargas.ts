@@ -30,6 +30,20 @@ export function descargarExcel(nombre: string, hoja: string, columnas: Columna[]
   XLSX.writeFile(wb, `${nombre}.xlsx`);
 }
 
+/**
+ * Descarga una PLANTILLA .xlsx con los encabezados exactos y filas de ejemplo,
+ * para que el usuario sepa el formato al subir su Excel.
+ */
+export function descargarPlantilla(nombre: string, hoja: string, encabezados: string[], ejemplos: (string | number | boolean)[][]) {
+  const aoa: any[][] = [encabezados, ...ejemplos];
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  // ancho de columnas para que se lea bien
+  ws['!cols'] = encabezados.map((h) => ({ wch: Math.max(12, h.length + 2) }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, hoja.slice(0, 31));
+  XLSX.writeFile(wb, `${nombre}.xlsx`);
+}
+
 /** Descarga PDF (HU-13). */
 export function descargarPdf(nombre: string, titulo: string, columnas: Columna[], filas: any[]) {
   const doc = new jsPDF();

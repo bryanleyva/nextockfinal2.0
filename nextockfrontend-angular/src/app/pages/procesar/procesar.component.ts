@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
+import { descargarPlantilla } from '../../core/descargas';
 
 @Component({
   selector: 'app-procesar',
@@ -17,6 +18,8 @@ import { ApiService } from '../../core/api.service';
     .head .t { font-weight: 700; color: var(--text); }
     .head .s { font-size: .8rem; color: var(--muted); }
     .card .btn { margin-top: 16px; align-self: stretch; }
+    .plantilla { margin-top: 10px; background: none; border: none; color: var(--teal); font-weight: 600; font-size: .82rem; cursor: pointer; text-decoration: underline; align-self: center; }
+    .plantilla:hover { color: var(--teal-dark); }
     .ayuda { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 22px; color: var(--muted); font-size: .9rem; background: var(--teal-soft); border-radius: var(--radius-sm); padding: 12px 18px; }
   `],
   template: `
@@ -39,6 +42,7 @@ import { ApiService } from '../../core/api.service';
               <span class="up-hint">Formatos: CSV, Excel (.xlsx, .xls)</span>
               <span class="up-file" *ngIf="nomProd()">{{ nomProd() }}</span>
             </label>
+            <button type="button" class="plantilla" (click)="plantillaProductos()">📥 Descargar plantilla Excel</button>
             <button class="btn" (click)="subirProd()">Subir productos</button>
           </div>
 
@@ -55,6 +59,7 @@ import { ApiService } from '../../core/api.service';
               <span class="up-hint">Formatos: CSV, Excel (.xlsx, .xls)</span>
               <span class="up-file" *ngIf="nomHechos()">{{ nomHechos() }}</span>
             </label>
+            <button type="button" class="plantilla" (click)="plantillaHechos()">📥 Descargar plantilla Excel</button>
             <button class="btn" (click)="subirHechos()">Adjuntar base de datos</button>
           </div>
         </div>
@@ -113,6 +118,29 @@ export class ProcesarComponent {
       },
       error: (e) => { this.cargando.set(false); this.aviso(e.error?.message || 'Error al subir', false); },
     });
+  }
+
+  // Plantilla del catálogo de productos (encabezados exactos + 2 filas de ejemplo)
+  plantillaProductos() {
+    const enc = ['product_id', 'source_product_id', 'product_name', 'category', 'unit_measure',
+      'sale_price', 'purchase_price', 'lead_time_days', 'active', 'created_at'];
+    const ejemplos = [
+      [1, 'SKU-0001', 'Inca Kola 500ml', 'Bebidas', 'und', 3.00, 1.90, 2, true, '2025-01-01'],
+      [2, 'SKU-0002', 'Galleta Soda Field', 'Snacks', 'und', 1.20, 0.80, 1, true, '2025-01-01'],
+    ];
+    descargarPlantilla('plantilla_productos', 'product', enc, ejemplos);
+  }
+
+  // Plantilla de ventas e inventario (encabezados exactos + 2 filas de ejemplo)
+  plantillaHechos() {
+    const enc = ['fact_id', 'product_id', 'category', 'record_date', 'stock_initial', 'units_received',
+      'units_sold', 'stock_final', 'days_since_last_order', 'last_order_qty', 'sales_avg_7_days',
+      'sale_price', 'lead_time_days', 'day_of_week', 'month', 'stockout_flag', 'target_units_sold'];
+    const ejemplos = [
+      [1, 1, 1, '2025-01-01', 50, 0, 8, 42, 0, 0, 8, 3.00, 2, 2, 1, false, 7],
+      [2, 1, 1, '2025-01-02', 42, 0, 7, 35, 1, 0, 7.5, 3.00, 2, 3, 1, false, 6],
+    ];
+    descargarPlantilla('plantilla_ventas_inventario', 'fact_sales_inventory', enc, ejemplos);
   }
 
   private aviso(t: string, ok: boolean) { this.msg.set(t); this.ok.set(ok); }
