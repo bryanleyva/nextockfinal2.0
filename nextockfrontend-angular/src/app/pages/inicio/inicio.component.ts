@@ -38,7 +38,7 @@ import { HelpComponent } from '../../shared/help.component';
       <div *ngIf="!x.sin_datos" class="metrics">
         <div class="metric"><div class="v">{{ x.productos_total }}</div><div class="l">Productos</div></div>
         <div class="metric"><div class="v">{{ x.unidades_en_stock }}</div><div class="l">Unidades en stock</div></div>
-        <div class="metric"><div class="v">S/ {{ x.valor_inventario | number:'1.0-0' }}</div><div class="l">Valor inventario</div></div>
+        <div class="metric"><div class="v">S/ {{ x.valor_inventario | number:'1.2-2' }}</div><div class="l">Valor inventario</div></div>
         <div class="metric"><div class="v" style="color:var(--ambar)">{{ x.productos_bajo_stock }}</div><div class="l">Bajo stock <app-help texto="Productos con 10 unidades o menos. Conviene vigilarlos para no quedarte sin stock."/></div></div>
         <div class="metric"><div class="v" style="color:var(--alerta)">{{ x.productos_agotados }}</div><div class="l">Agotados</div></div>
         <div class="metric"><div class="v">{{ x.tasa_quiebre_pct }}%</div><div class="l">Tasa de quiebre <app-help texto="Porcentaje de productos que están en cero (sin stock) respecto al total."/></div></div>

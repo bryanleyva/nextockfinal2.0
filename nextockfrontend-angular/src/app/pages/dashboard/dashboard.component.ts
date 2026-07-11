@@ -23,7 +23,7 @@ import { optEstados, optRanking, optVentas } from '../../core/charts';
       <div class="cards">
         <div class="card"><div class="valor">{{ m()?.productos_total }}</div><div class="etq">Productos</div></div>
         <div class="card"><div class="valor">{{ m()?.unidades_en_stock }}</div><div class="etq">Unidades en stock</div></div>
-        <div class="card"><div class="valor">S/ {{ m()?.valor_inventario | number:'1.0-0' }}</div><div class="etq">Valor inventario</div></div>
+        <div class="card"><div class="valor">S/ {{ m()?.valor_inventario | number:'1.2-2' }}</div><div class="etq">Valor inventario</div></div>
         <div class="card"><div class="valor">{{ m()?.productos_bajo_stock }}</div><div class="etq">Bajo stock</div></div>
         <div class="card"><div class="valor">{{ m()?.productos_agotados }}</div><div class="etq">Agotados</div></div>
         <div class="card"><div class="valor">{{ m()?.tasa_quiebre_pct }}%</div><div class="etq">Tasa de quiebre</div></div>

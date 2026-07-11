@@ -40,10 +40,10 @@ interface FilaFin {
     <ng-container *ngIf="paso()==='financiero'">
       <h2 class="page-title">Análisis financiero</h2>
       <div class="metrics" *ngIf="fin() as f">
-        <div class="metric"><div class="v">S/ {{f.ingreso_total | number:'1.0-0'}}</div><div class="l">Ingreso total</div></div>
-        <div class="metric"><div class="v">S/ {{f.costo_total | number:'1.0-0'}}</div><div class="l">Costo total</div></div>
-        <div class="metric"><div class="v">S/ {{f.utilidad_bruta | number:'1.0-0'}}</div><div class="l">Utilidad bruta</div></div>
-        <div class="metric"><div class="v">{{f.margen_pct}}%</div><div class="l">Margen bruto <app-help texto="Porcentaje de ganancia sobre las ventas: (ingreso - costo) / ingreso. Mientras más alto, mejor rentabilidad."/></div></div>
+        <div class="metric"><div class="v">S/ {{f.ingreso_total | number:'1.2-2'}}</div><div class="l">Ingreso total</div></div>
+        <div class="metric"><div class="v">S/ {{f.costo_total | number:'1.2-2'}}</div><div class="l">Costo total</div></div>
+        <div class="metric"><div class="v">S/ {{f.utilidad_bruta | number:'1.2-2'}}</div><div class="l">Utilidad bruta</div></div>
+        <div class="metric"><div class="v">{{f.margen_pct | number:'1.2-2'}}%</div><div class="l">Margen bruto <app-help texto="Porcentaje de ganancia sobre las ventas: (ingreso - costo) / ingreso. Mientras más alto, mejor rentabilidad."/></div></div>
         <div class="metric"><div class="v">{{f.unidades_vendidas | number}}</div><div class="l">Unidades vendidas</div></div>
       </div>
 
@@ -72,8 +72,8 @@ interface FilaFin {
             <tr *ngFor="let r of detalle()">
               <td>{{r.sku}}</td><td>{{r.nombre}}</td><td>{{r.categoria}}</td>
               <td>S/ {{r.venta | number:'1.2-2'}}</td><td>S/ {{r.compra | number:'1.2-2'}}</td>
-              <td>{{r.margen | number:'1.0-0'}}%</td><td>{{r.unidades | number}}</td>
-              <td><b>S/ {{r.ganancia | number:'1.0-0'}}</b></td>
+              <td>{{r.margen | number:'1.2-2'}}%</td><td>{{r.unidades | number:'1.0-0'}}</td>
+              <td><b>S/ {{r.ganancia | number:'1.2-2'}}</b></td>
             </tr>
           </tbody>
         </table>

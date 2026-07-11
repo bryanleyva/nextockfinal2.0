@@ -2,12 +2,14 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
+import { dinero, numero, porcentaje } from '../../core/formato';
 
 interface ItemHist {
   id: number; tipo: 'financiero' | 'inventario'; titulo: string;
   resumen: any; createdAt: string;
 }
-interface MetricaComp { label: string; valores: (number | string)[]; }
+type FmtTipo = 'money' | 'pct' | 'int';
+interface MetricaComp { label: string; valores: (number | string)[]; fmt: FmtTipo; }
 
 @Component({
   selector: 'app-historial',
@@ -56,8 +58,8 @@ interface MetricaComp { label: string; valores: (number | string)[]; }
           <tr *ngFor="let m of c.metricas">
             <td>{{ m.label }}</td>
             <td *ngFor="let v of m.valores; let i = index">
-              {{ v }}
-              <span *ngIf="i > 0" class="delta" [class]="dir(m.valores[0], v)">{{ deltaTxt(m.valores[0], v) }}</span>
+              {{ fmtVal(v, m.fmt) }}
+              <span *ngIf="i > 0" class="delta" [class]="dir(m.valores[0], v)">{{ deltaTxt(m.valores[0], v, m.fmt) }}</span>
             </td>
           </tr>
         </tbody>
@@ -130,23 +132,24 @@ export class HistorialComponent {
 
     const tipo = sel[0].tipo;
     const cols = sel.map((s) => ({ titulo: s.titulo, fecha: s.createdAt }));
-    const campos = tipo === 'financiero'
+    const campos: { label: string; key: string; fmt: FmtTipo }[] = tipo === 'financiero'
       ? [
-          { label: 'Ingreso total (S/)', key: 'ingreso_total' },
-          { label: 'Costo total (S/)', key: 'costo_total' },
-          { label: 'Utilidad bruta (S/)', key: 'utilidad_bruta' },
-          { label: 'Margen bruto (%)', key: 'margen_pct' },
-          { label: 'Unidades vendidas', key: 'unidades_vendidas' },
+          { label: 'Ingreso total (S/)', key: 'ingreso_total', fmt: 'money' },
+          { label: 'Costo total (S/)', key: 'costo_total', fmt: 'money' },
+          { label: 'Utilidad bruta (S/)', key: 'utilidad_bruta', fmt: 'money' },
+          { label: 'Margen bruto (%)', key: 'margen_pct', fmt: 'pct' },
+          { label: 'Unidades vendidas', key: 'unidades_vendidas', fmt: 'int' },
         ]
       : [
-          { label: 'Productos', key: 'productos' },
-          { label: 'Óptimo', key: 'n_optimo' },
-          { label: 'Sobre stock', key: 'n_sobre_stock' },
-          { label: 'Déficit', key: 'n_deficit' },
+          { label: 'Productos', key: 'productos', fmt: 'int' },
+          { label: 'Óptimo', key: 'n_optimo', fmt: 'int' },
+          { label: 'Sobre stock', key: 'n_sobre_stock', fmt: 'int' },
+          { label: 'Déficit', key: 'n_deficit', fmt: 'int' },
         ];
 
     const metricas: MetricaComp[] = campos.map((c) => ({
       label: c.label,
+      fmt: c.fmt,
       valores: sel.map((s) => {
         const v = s.resumen?.[c.key];
         return v ?? '—';
@@ -162,19 +165,27 @@ export class HistorialComponent {
     if (!isFinite(a) || !isFinite(b) || a === b) return 'eq';
     return b > a ? 'up' : 'down';
   }
-  deltaTxt(base: number | string, v: number | string): string {
+  /** Formatea un valor de la tabla de comparación según su tipo. */
+  fmtVal(v: number | string, fmt: FmtTipo): string {
+    if (v === '—' || v == null) return '—';
+    if (fmt === 'money') return dinero(v);
+    if (fmt === 'pct') return porcentaje(v);
+    return numero(v);
+  }
+
+  deltaTxt(base: number | string, v: number | string, fmt: FmtTipo = 'int'): string {
     const a = Number(base), b = Number(v);
     if (!isFinite(a) || !isFinite(b)) return '';
     const d = b - a;
     if (d === 0) return '=';
     const signo = d > 0 ? '▲' : '▼';
-    return `${signo} ${Math.abs(d).toLocaleString('es-PE', { maximumFractionDigits: 1 })}`;
+    return `${signo} ${numero(Math.abs(d), fmt === 'int' ? 0 : 2)}`;
   }
 
   resumenTexto(h: ItemHist): string {
     const r = h.resumen || {};
     if (h.tipo === 'financiero') {
-      return `Ingreso S/ ${r.ingreso_total ?? '-'} · Utilidad S/ ${r.utilidad_bruta ?? '-'} · Margen ${r.margen_pct ?? '-'}%`;
+      return `Ingreso ${dinero(r.ingreso_total)} · Utilidad ${dinero(r.utilidad_bruta)} · Margen ${porcentaje(r.margen_pct)}`;
     }
     return `Óptimo ${r.n_optimo ?? '-'} · Sobre stock ${r.n_sobre_stock ?? '-'} · Déficit ${r.n_deficit ?? '-'}`;
   }

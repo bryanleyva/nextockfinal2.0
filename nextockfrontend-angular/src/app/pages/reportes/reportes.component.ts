@@ -19,10 +19,10 @@ import { Finanzas, Reporte } from '../../core/models';
       <div class="panel">
         <h3>Resumen financiero</h3>
         <div class="cards" *ngIf="fin() as f">
-          <div class="card"><div class="valor">S/ {{ f.ingreso_total | number:'1.0-0' }}</div><div class="etq">Ingreso total</div></div>
-          <div class="card"><div class="valor">S/ {{ f.costo_total | number:'1.0-0' }}</div><div class="etq">Costo total</div></div>
-          <div class="card"><div class="valor">S/ {{ f.utilidad_bruta | number:'1.0-0' }}</div><div class="etq">Utilidad bruta</div></div>
-          <div class="card"><div class="valor">{{ f.margen_pct }}%</div><div class="etq">Margen bruto</div></div>
+          <div class="card"><div class="valor">S/ {{ f.ingreso_total | number:'1.2-2' }}</div><div class="etq">Ingreso total</div></div>
+          <div class="card"><div class="valor">S/ {{ f.costo_total | number:'1.2-2' }}</div><div class="etq">Costo total</div></div>
+          <div class="card"><div class="valor">S/ {{ f.utilidad_bruta | number:'1.2-2' }}</div><div class="etq">Utilidad bruta</div></div>
+          <div class="card"><div class="valor">{{ f.margen_pct | number:'1.2-2' }}%</div><div class="etq">Margen bruto</div></div>
           <div class="card"><div class="valor">{{ f.unidades_vendidas | number }}</div><div class="etq">Unidades vendidas</div></div>
         </div>
       </div>
