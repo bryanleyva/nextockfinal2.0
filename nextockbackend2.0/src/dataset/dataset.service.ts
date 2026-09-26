@@ -293,7 +293,7 @@ export class DatasetService implements OnModuleInit {
       order: { recordDate: 'DESC', factId: 'DESC' },
     });
 
-    const hoy = new Date().toISOString().slice(0, 10);
+    const hoy = this.hoyLocal();
     const fecha = (dto.fecha || hoy).slice(0, 10);
     const stockPrevio = ultima ? Number(ultima.stockFinal) : 0;
 
@@ -391,13 +391,10 @@ export class DatasetService implements OnModuleInit {
     if (!row?.ultima) return { sin_datos: true };
 
     const ultima = this.fechaISO(row.ultima);
-    const hoy = new Date();
     const msDia = 24 * 60 * 60 * 1000;
     const [y, m, d] = ultima.split('-').map(Number);
-    const diasDesde = Math.max(
-      0,
-      Math.floor((Date.UTC(hoy.getUTCFullYear(), hoy.getUTCMonth(), hoy.getUTCDate()) - Date.UTC(y, m - 1, d)) / msDia),
-    );
+    const [hy, hm, hd] = this.hoyLocal().split('-').map(Number);
+    const diasDesde = Math.max(0, Math.floor((Date.UTC(hy, hm - 1, hd) - Date.UTC(y, m - 1, d)) / msDia));
     return {
       sin_datos: false,
       ultima_fecha: ultima,
@@ -407,6 +404,20 @@ export class DatasetService implements OnModuleInit {
       productos: Number(row.productos),
       desactualizado: diasDesde > 7,
     };
+  }
+
+  /**
+   * Fecha de hoy (YYYY-MM-DD) en la zona horaria del negocio (APP_TZ, por defecto America/Lima).
+   * Evita que un movimiento registrado de noche quede con la fecha del dia siguiente,
+   * que es lo que pasaba al usar la fecha UTC del servidor.
+   */
+  private hoyLocal(): string {
+    const tz = process.env.APP_TZ || 'America/Lima';
+    try {
+      return new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    } catch {
+      return new Date().toISOString().slice(0, 10);
+    }
   }
 
   /** Normaliza una fecha (Date o string del driver) a 'YYYY-MM-DD' sin desfase de zona horaria. */
