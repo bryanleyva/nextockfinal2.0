@@ -126,7 +126,8 @@ export class InventarioComponent {
 
   buscar() {
     this.mensaje.set('');
-    if (!this.q.trim()) { this.cargar(); return; }
+    // HU-21 Escenario 3: búsqueda sin término -> no se busca y se avisa al usuario
+    if (!this.q.trim()) { this.mensaje.set('Ingrese un término de búsqueda'); return; }
     this.api.buscar(this.q).subscribe({
       next: (r) => {
         this.productos.set(r.productos);

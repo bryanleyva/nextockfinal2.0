@@ -6,7 +6,7 @@ import { EncuestaComponent } from '../../shared/encuesta.component';
 
 interface BodegaAdmin {
   id: number; nombre: string; email: string; bodega: string | null;
-  rol: string; registrado: string;
+  rol: string; registrado: string; bloqueado?: boolean;
   productos: number; dias_datos: number; ultima_fecha: string | null;
 }
 
@@ -50,6 +50,10 @@ interface BodegaAdmin {
                   <option value="gestor">Bodeguero</option>
                   <option value="visualizador">Visualizador</option>
                 </select>
+                <div *ngIf="b.bloqueado" style="margin-top:6px;">
+                  <span class="small" style="color:var(--alerta);font-weight:600;">🔒 Bloqueada</span>
+                  <button class="btn-ghost" style="padding:3px 10px;font-size:.8rem;margin-left:6px;" (click)="desbloquear(b)">Desbloquear</button>
+                </div>
               </td>
               <td>{{ b.productos }}</td>
               <td>{{ b.dias_datos }}</td>
@@ -125,6 +129,14 @@ export class AdminComponent {
     this.api.cambiarRol(b.id, rol).subscribe({
       next: () => { b.rol = rol; this.ok.set(true); this.msg.set(`Rol de ${b.nombre} actualizado a ${rol}.`); },
       error: (e) => { b.rol = anterior; this.ok.set(false); this.msg.set(e.error?.message || 'No se pudo cambiar el rol'); },
+    });
+  }
+
+  // HU-23 Escenario 3: desbloquear una cuenta bloqueada por intentos fallidos
+  desbloquear(b: BodegaAdmin) {
+    this.api.desbloquear(b.id).subscribe({
+      next: () => { b.bloqueado = false; this.ok.set(true); this.msg.set(`Cuenta de ${b.nombre} desbloqueada.`); },
+      error: (e) => { this.ok.set(false); this.msg.set(e.error?.message || 'No se pudo desbloquear la cuenta'); },
     });
   }
 

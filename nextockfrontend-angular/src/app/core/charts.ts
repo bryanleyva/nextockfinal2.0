@@ -32,7 +32,9 @@ export function optStock(s: Series): Highcharts.Options {
     credits: { enabled: false },
     xAxis: { type: 'datetime' },
     yAxis: {
-      title: { text: 'Unidades en stock' }, min: 0,
+      // softMax: el eje llega al menos hasta el punto de reorden, para que sus líneas
+      // de referencia se vean aunque el stock proyectado sea 0
+      title: { text: 'Unidades en stock' }, min: 0, softMax: Math.ceil((r.punto_reorden || 0) * 1.15),
       plotLines: [
         { value: r.punto_reorden, color: COL.alerta, dashStyle: 'Dash', width: 2,
           label: { text: 'Reorden (' + Math.round(r.punto_reorden) + ')', style: { color: COL.alerta } } },

@@ -76,8 +76,8 @@ export class MlService {
     return this.get(this.q('/ml/finanzas', store));
   }
 
-  // HU-18: ranking de productos mas vendidos (n grande para cubrir toda la bodega)
-  ranking(store: number, n = 50) {
+  // HU-18: ranking de productos mas vendidos. Sin n se piden todos (n muy grande).
+  ranking(store: number, n = 100000) {
     return this.get(`${this.q('/ml/ranking', store)}&n=${n}`);
   }
 

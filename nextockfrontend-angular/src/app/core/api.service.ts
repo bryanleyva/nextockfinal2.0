@@ -38,6 +38,9 @@ export class ApiService {
   cambiarRol(id: number, rol: string) {
     return this.http.patch<any>(`${API_BASE}/usuarios/admin/usuarios/${id}/rol`, { rol });
   }
+  desbloquear(id: number) {
+    return this.http.patch<any>(`${API_BASE}/usuarios/admin/usuarios/${id}/desbloquear`, {});
+  }
 
   // ---- Inventario / dashboard ----
   metricas() { return this.http.get<Metricas>(`${API_BASE}/inventario/metricas`); }
@@ -84,9 +87,10 @@ export class ApiService {
   series(sku: string) { return this.http.get<Series>(`${API_BASE}/analisis/series/${sku}`); }
   reporteInventario() { return this.http.get<Reporte>(`${API_BASE}/analisis/reporte-inventario`); }
   finanzas() { return this.http.get<Finanzas>(`${API_BASE}/analisis/finanzas`); }
-  ranking() {
+  /** HU-18: ranking de más vendidos. Con n devuelve solo el top n; sin n, todos los productos. */
+  ranking(n?: number) {
     return this.http.get<{ ranking: { sku: string; nombre: string; unidades_vendidas: number }[] }>(
-      `${API_BASE}/analisis/ranking`,
+      `${API_BASE}/analisis/ranking${n ? `?n=${n}` : ''}`,
     );
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../users/entities/user.entity';
@@ -41,9 +41,15 @@ export class AnalysisController {
     return this.ml.finanzas(user.id);
   }
 
-  // HU-18: ranking de productos mas vendidos
+  // HU-18: ranking de productos mas vendidos. ?n= limita el top (1 a 100);
+  // sin n devuelve todos los productos (lo usa el analisis financiero).
   @Get('ranking')
-  ranking(@GetUser() user: User) {
-    return this.ml.ranking(user.id);
+  ranking(@GetUser() user: User, @Query('n') n?: string) {
+    if (n === undefined || n === '') return this.ml.ranking(user.id);
+    const top = Number(n);
+    if (!Number.isInteger(top) || top < 1 || top > 100) {
+      throw new BadRequestException('El límite del top debe ser un número entero entre 1 y 100');
+    }
+    return this.ml.ranking(user.id, top);
   }
 }

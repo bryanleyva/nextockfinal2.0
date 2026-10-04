@@ -7,7 +7,7 @@ import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { ApiService } from '../../core/api.service';
 import { Finanzas, Reporte } from '../../core/models';
-import { optEstados, optVentas, optCuellos } from '../../core/charts';
+import { optEstados, optVentas, optCuellos, optRanking } from '../../core/charts';
 import { descargarCsv, descargarExcel, descargarPdf, Columna } from '../../core/descargas';
 import { HelpComponent } from '../../shared/help.component';
 
@@ -58,6 +58,29 @@ interface FilaFin {
           <span *ngIf="ventasMsg()" style="color:var(--alerta);font-size:.85rem;">{{ ventasMsg() }}</span>
         </div>
         <highcharts-chart [Highcharts]="Highcharts" [options]="optVentas" class="chart" /></div>
+
+      <div class="panel" id="ranking">
+        <h3>Ranking de productos más vendidos
+          <app-help texto="Productos ordenados de mayor a menor según las unidades vendidas en todo tu historial. Elige cuántos ver con el filtro Top."/></h3>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+          <label for="topN" style="font-size:.85rem;color:var(--muted)">Mostrar</label>
+          <select id="topN" [(ngModel)]="topN" (ngModelChange)="cargarRanking()" style="padding:8px;border:1px solid #c9cdcf;border-radius:8px;">
+            <option [ngValue]="5">Top 5</option>
+            <option [ngValue]="10">Top 10</option>
+            <option [ngValue]="20">Top 20</option>
+          </select>
+          <span class="small" style="color:var(--muted)">{{ ranking().length }} producto(s)</span>
+        </div>
+        <highcharts-chart *ngIf="ranking().length" [Highcharts]="Highcharts" [options]="optRanking" class="chart" />
+        <table>
+          <thead><tr><th>#</th><th>SKU</th><th>Producto</th><th>Unid. vendidas</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let r of ranking(); let i = index">
+              <td>{{ i + 1 }}</td><td>{{ r.sku }}</td><td>{{ r.nombre }}</td><td>{{ r.unidades_vendidas | number:'1.0-0' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="panel">
         <h3>Detalle financiero por producto</h3>
@@ -136,6 +159,10 @@ export class AnalisisComponent {
   desde = ''; hasta = '';
   ventasMsg = signal('');
   guardadoMsg = signal('');
+  // HU-18: ranking de más vendidos con límite top N elegido por el usuario
+  topN = 5;
+  ranking = signal<{ sku: string; nombre: string; unidades_vendidas: number }[]>([]);
+  optRanking: Highcharts.Options = {};
 
   constructor() {
     this.api.metricas().subscribe((m) => { if (m.sin_datos) this.vacio.set(true); });
@@ -163,8 +190,16 @@ export class AnalisisComponent {
         );
         this.cargando.set(false);
         this.paso.set('financiero');
+        this.cargarRanking();
       },
       error: (e) => { this.cargando.set(false); this.error.set(e.error?.message || 'No se pudo cargar el análisis'); },
+    });
+  }
+
+  cargarRanking() {
+    this.api.ranking(this.topN).subscribe({
+      next: (r) => { this.ranking.set(r.ranking); this.optRanking = optRanking(r.ranking); },
+      error: (e) => this.error.set(e.error?.message || 'No se pudo cargar el ranking'),
     });
   }
 

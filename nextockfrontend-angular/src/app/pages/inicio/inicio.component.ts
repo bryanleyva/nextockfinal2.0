@@ -27,13 +27,16 @@ import { HelpComponent } from '../../shared/help.component';
     <div *ngIf="estado() as e">
       <div *ngIf="!e.sin_datos" class="frescura" [class.viejo]="e.desactualizado">
         <span>🗓️ Datos al <b>{{ fmtFecha(e.ultima_fecha) }}</b><ng-container *ngIf="e.dias_desde_ultima"> · hace {{ e.dias_desde_ultima }} día{{ e.dias_desde_ultima === 1 ? '' : 's' }}</ng-container></span>
-        <a routerLink="/app/inventario" class="link">{{ e.desactualizado ? 'Actualízalos ahora →' : 'Actualizar inventario →' }}</a>
+        <a *ngIf="auth.puedeEditar" routerLink="/app/inventario" class="link">{{ e.desactualizado ? 'Actualízalos ahora →' : 'Actualizar inventario →' }}</a>
       </div>
     </div>
 
     <div *ngIf="m() as x">
       <div *ngIf="x.sin_datos" class="aviso">
-        Aún no tienes datos. Comienza en <a routerLink="/app/procesar"><b>Procesar BD</b></a> subiendo tu CSV de ventas.
+        <ng-container *ngIf="auth.puedeEditar; else soloLectura">
+          Aún no tienes datos. Comienza en <a routerLink="/app/procesar"><b>Procesar BD</b></a> subiendo tu CSV de ventas.
+        </ng-container>
+        <ng-template #soloLectura>Aún no hay datos cargados. Tu rol (Visualizador) solo permite consultar; pide a un bodeguero o al administrador que cargue la información.</ng-template>
       </div>
       <div *ngIf="!x.sin_datos" class="metrics">
         <div class="metric"><div class="v">{{ x.productos_total }}</div><div class="l">Productos</div></div>
@@ -48,7 +51,7 @@ import { HelpComponent } from '../../shared/help.component';
     <div class="choices" style="margin-top:10px;">
       <a class="choice" routerLink="/app/analisis" style="text-decoration:none;"><div class="emoji">📊</div><div class="cap">Ver análisis</div></a>
       <a class="choice" routerLink="/app/prediccion" style="text-decoration:none;"><div class="emoji">📈</div><div class="cap">Predicciones</div></a>
-      <a class="choice" routerLink="/app/inventario" style="text-decoration:none;"><div class="emoji">🔎</div><div class="cap">Inventario</div></a>
+      <a *ngIf="auth.puedeEditar" class="choice" routerLink="/app/inventario" style="text-decoration:none;"><div class="emoji">🔎</div><div class="cap">Inventario</div></a>
     </div>
   `,
 })

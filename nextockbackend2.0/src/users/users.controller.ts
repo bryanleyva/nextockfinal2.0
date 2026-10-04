@@ -60,6 +60,14 @@ export class UsersController {
     return this.map(u);
   }
 
+  // HU-23 Escenario 3: el administrador desbloquea una cuenta bloqueada por intentos fallidos
+  @Patch('admin/usuarios/:id/desbloquear')
+  @Roles(UserRole.ADMIN)
+  async desbloquear(@Param('id') id: string) {
+    const u = await this.users.desbloquear(Number(id));
+    return this.map(u);
+  }
+
   @Patch('perfil')
   async actualizar(@GetUser() user: User, @Body() dto: UpdatePerfilDto) {
     const actualizado = await this.users.updatePerfil(user.id, dto);
@@ -100,6 +108,7 @@ export class UsersController {
       telefono: u.phone,
       bodega: u.bodega,
       rol: u.role,
+      bloqueado: u.bloqueado,
       foto: u.photoUrl,
       registrado: u.createdAt,
     };

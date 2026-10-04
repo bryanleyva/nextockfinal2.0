@@ -35,5 +35,8 @@ import { AuthService } from '../core/auth.service';
 export class PrivateLayoutComponent {
   auth = inject(AuthService);
   private router = inject(Router);
+  // Al entrar al área privada se relee el rol del servidor, para que el menú refleje
+  // un cambio de rol hecho por el administrador mientras la sesión estaba abierta.
+  constructor() { this.auth.refrescarUsuario().subscribe({ error: () => {} }); }
   salir() { this.auth.salir(); this.router.navigate(['/login']); }
 }

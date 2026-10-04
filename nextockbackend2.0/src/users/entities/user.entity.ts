@@ -35,6 +35,13 @@ export class User {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.GESTOR })
   role: UserRole;
 
+  // HU-23 Escenario 3: bloqueo de la cuenta por intentos fallidos de inicio de sesion
+  @Column({ name: 'intentos_fallidos', type: 'int', default: 0 })
+  intentosFallidos: number;
+
+  @Column({ default: false })
+  bloqueado: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }

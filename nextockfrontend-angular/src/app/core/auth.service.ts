@@ -27,6 +27,22 @@ export class AuthService {
     return this.http.post(`${API_BASE}/auth/cambiar-password`, { actual, nueva });
   }
 
+  /**
+   * Relee el perfil del servidor y actualiza el rol guardado. Así, si el administrador
+   * cambió el rol mientras la sesión estaba abierta, el frontend lo aplica de inmediato.
+   */
+  refrescarUsuario() {
+    return this.http.get<{ id: number; email: string; nombre: string; rol: string }>(`${API_BASE}/usuarios/perfil`).pipe(
+      tap((p) => {
+        const actual = this.usuario();
+        if (!actual) return;
+        const nuevo = { ...actual, nombre: p.nombre, rol: p.rol } as SesionResp['usuario'];
+        localStorage.setItem('nx_user', JSON.stringify(nuevo));
+        this.usuario.set(nuevo);
+      }),
+    );
+  }
+
   private guardar(r: SesionResp) {
     localStorage.setItem('nx_token', r.access_token);
     localStorage.setItem('nx_user', JSON.stringify(r.usuario));
